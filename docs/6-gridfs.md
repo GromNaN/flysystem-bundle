@@ -64,19 +64,18 @@ For a more advanced configuration, create a service for
 # config/packages/flysystem.yaml
 
 services:
-    mongodb_client:
+    app.mongodb.client:
         class: 'MongoDB\Client'
-        arguments:
-          - '%env(MONGODB_URI)%'
+        arguments: ['%env(MONGODB_URI)%']
 
-    mongodb_database:
+    app.mongodb.database:
         class: 'MongoDB\Database'
-        factory: ['mongodb_client', 'selectDatabase']
+        factory: ['@app.mongodb.client', 'selectDatabase']
         arguments: ['%env(MONGODB_DB)%']
 
-    mongodb_gridfs_bucket:
+    app.mongodb.gridfs_bucket:
         class: 'MongoDB\GridFS\Bucket'
-        factory: ['@mongodb_database', 'selectGridFSBucket']
+        factory: ['@app.mongodb.database', 'selectGridFSBucket']
 
 flysystem:
     storages:
@@ -84,5 +83,5 @@ flysystem:
             adapter: 'gridfs'
             options:
                 # Service name
-                bucket: 'mongodb_gridfs_bucket'
+                bucket: 'app.mongodb.gridfs_bucket'
 ```
